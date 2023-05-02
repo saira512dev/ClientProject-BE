@@ -4,7 +4,7 @@ import axios from "axios";
 export const getSales = async (req, res) => {
   try {
     let data = await Sales.findOne({userId: req.session.passport.user})
-    console.log(data)
+    console.log(data, "HERE", req.session.passport.user)
     res.status(200).json({data});
   } catch (error) {
     res.status(404).json({ message: error });
@@ -14,19 +14,22 @@ export const getSales = async (req, res) => {
 export const searchSales = async (req, res) => {
   try {
     const { searchString } = req.query;
-    console.log(JSON.parse(searchString).searchQuery);
+    // console.log(JSON.parse(searchString).searchQuery);
+    // console.log(JSON.parse(searchString).searchQuery)
+    // res.status(404).json("end");
+    // return;
     const url =
       "https://api.dataforseo.com/v3/dataforseo_labs/google/historical_search_volume/live";
 
     const data = [
       {
-        keywords: [JSON.parse(searchString).searchQuery],
-        location_code: 2840,
-        language_code: "en",
+        keywords: [JSON.parse(searchString).searchQuery.query],
+        location_code: JSON.parse(searchString).searchQuery.country || 2840,
+        language_code: JSON.parse(searchString).searchQuery.language || "en",
         include_serp_info: false,
       },
     ];
-
+     console.log(data)
     const config = {
       headers: {
         Authorization:
@@ -44,8 +47,8 @@ export const searchSales = async (req, res) => {
       competitionLevel: item.keyword_info.competition_level,
       cpc: item.keyword_info.cpc,
     }));
-    console.log(results[0].monthlySearches);
-    console.log(req.session.passport.user);
+    // console.log(results[0].monthlySearches);
+    // console.log(req.session.passport.user);
     //If there are results from search then store the results in the db
     //also check if the user already has a search store. If yes, delete it.
     if (results) {
@@ -55,11 +58,11 @@ export const searchSales = async (req, res) => {
             } else if (!deletedDoc) {
               console.log("Document not found.");
             } else {
-              console.log("Deleted document: ", deletedDoc);
+              console.log("Deleted document: ");
             }
         });
       let search = new Sales({
-        search_item: JSON.parse(searchString).searchQuery,
+        search_item: JSON.parse(searchString).searchQuery.query,
         userId: req.session.passport.user,
         competition: results[0].competition,
         competitionLevel: results[0].competitionLevel,
@@ -67,10 +70,10 @@ export const searchSales = async (req, res) => {
         monthlySearches: results[0].monthlySearches,
       });
       console.log("search");
-      console.log(search);
+      // console.log(search);
       search.save();
     }
-    console.log(results);
+    // console.log(results);
     //    const res = ""
     // console.log("REQUEST HERE")
     res.status(200).json(results);
