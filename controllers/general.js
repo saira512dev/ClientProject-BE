@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import OverallStat from "../models/OverallStat.js";
 import Transaction from "../models/Transaction.js";
+import axios from "axios";
 
 export const getUser = async (req, res) => {
     try {
@@ -59,6 +60,37 @@ export const getDashboardStats = async (req, res) => {
         })
 
     } catch( error ) {
+        res.status(404).json({message: error})
+    }
+}
+
+export const getLocationAndLanguage = async(req, res) => {
+    try {
+        const url =
+        "https://api.dataforseo.com/v3/dataforseo_labs/locations_and_languages"
+    
+        // const data = [
+        //   {
+        //     keywords: [JSON.parse(searchString).searchQuery],
+        //     location_code: 2840,
+        //     language_code: "en",
+        //     include_serp_info: false,
+        //   },
+        // ];
+    
+        const config = {
+          headers: {
+            Authorization:
+              "Basic bmF0aGFuLmFsdmVzQGVwaXRlY2guZXU6OWRhZDc4ZDFhODdkOGRhOQ==",
+            "Content-Type": "application/json",
+          },
+        };
+    
+        const response = await axios.get(url,config);
+        const countries = response.data.tasks[0].result
+        res.status(200).json(countries)
+
+    } catch (e) {
         res.status(404).json({message: error})
     }
 }
