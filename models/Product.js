@@ -1,12 +1,13 @@
 import mongoose from "mongoose";
 
 const ProductSchema = new mongoose.Schema({
-    name: String,
-    price: Number,
-    category: String,
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    }, 
+    title: String,
     description: String,
-    rating: Number,
-    supply: Number
+    items : { type : Array , "default" : [] },
 },
 { timestamps: true}
 )
