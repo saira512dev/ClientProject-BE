@@ -3,6 +3,7 @@ import Product from "../models/Product.js";
 import axios from "axios";
 
 export const getSales = async (req, res) => {
+  console.log("SALES DATA HERE", req.session.passport.user)
   try {
     let data = await Sales.findOne({userId: req.session.passport.user})
     console.log(data, "HERE", req.session.passport.user)
