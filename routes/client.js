@@ -4,7 +4,7 @@ import ensureAuth from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.get("/products", ensureAuth, getProducts);
+router.get("/products",  getProducts);
 router.get("/customers", ensureAuth, getCustomers);
 router.get("/transactions", ensureAuth, getTransactions);
 // router.get("/backlinks", ensureAuth, getBacklinks);
