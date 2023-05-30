@@ -7,9 +7,10 @@ import getCountryIso3 from "country-iso-2-to-3"
 import axios from "axios";
 
 export const getProducts = async (req, res) => {
-    console.log(req.query.userId)
+    console.log("USERID", req.query.userId)
     try {
         const products = await Product.find({userId: req.query.userId});
+        console.log(products)
         res.status(200).json(products)
     } catch( error ) {
         res.status(404).json({message: error})
