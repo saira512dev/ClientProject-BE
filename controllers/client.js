@@ -2,25 +2,14 @@ import Product from "../models/Product.js";
 import ProductStat from "../models/ProductStat.js"
 import User from "../models/User.js"
 import Transaction from "../models/Transaction.js"
+// import Backlink from "../models/backlink.js"
 import getCountryIso3 from "country-iso-2-to-3"
+import axios from "axios";
 
 export const getProducts = async (req, res) => {
     try {
-        const products = await Product.find();
-
-        const productsWithStats = await Promise.all(
-            products.map(async (product) => {
-                const stat = await ProductStat.find({
-                    productId: product._id
-                })
-            return {
-                ...product._doc,
-                stat
-            }
-            })
-            )
-
-            res.status(200).json(productsWithStats)
+        const products = await Product.find({userId: req.query.userId});
+        res.status(200).json(products)
     } catch( error ) {
         res.status(404).json({message: error})
     }
@@ -69,6 +58,8 @@ export const getTransactions = async (req, res) => {
         res.status(404).json({message: error})
     }
 }
+
+
 
 export const getGeography = async(req, res) => {
     try {
