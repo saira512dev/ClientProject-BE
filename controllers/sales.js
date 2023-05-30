@@ -7,7 +7,6 @@ export const getSales = async (req, res) => {
 
   try {
     let data = await Sales.findOne({userId: req.query.userId})
-    console.log(data, "HERE", req.session.passport.user)
     res.status(200).json({data});
   } catch (error) {
     res.status(404).json({ message: error });
