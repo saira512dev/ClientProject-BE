@@ -4,8 +4,8 @@ import ensureAuth from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.get("/sales", ensureAuth, getSales)
-router.get("/searchSales", ensureAuth, searchSales)
+router.get("/sales", getSales)
+router.get("/searchSales", searchSales)
 router.get("/searchProducts", ensureAuth, searchProducts)
 
 export default router;
