@@ -3,7 +3,7 @@ import Product from "../models/Product.js";
 import axios from "axios";
 
 export const getSales = async (req, res) => {
-  console.log("HERE",req.query)
+  console.log("HERE",req.query.userId)
 
   try {
     let data = await Sales.findOne({userId: req.query.userId})
@@ -15,9 +15,11 @@ export const getSales = async (req, res) => {
 };
 
 export const searchSales = async (req, res) => {
+  console.log("HERE",req.query)
   try {
     const { searchString } = req.query;
-    // console.log(JSON.parse(searchString).searchQuery);
+    // console.log(searchString.userId)
+    console.log(JSON.parse(searchString).userId);
     // console.log(JSON.parse(searchString).searchQuery)
     // res.status(404).json("end");
     // return;
@@ -55,7 +57,7 @@ export const searchSales = async (req, res) => {
     //If there are results from search then store the results in the db
     //also check if the user already has a search store. If yes, delete it.
     if (results) {
-        Sales.findOneAndDelete({ userId: req.session.passport.user }, function (err, deletedDoc) {
+        Sales.findOneAndDelete({ userId : JSON.parse(searchString).userId}, function (err, deletedDoc) {
             if (err) {
               console.log(err);
             } else if (!deletedDoc) {
@@ -66,7 +68,7 @@ export const searchSales = async (req, res) => {
         });
       let search = new Sales({
         search_item: JSON.parse(searchString).searchQuery.query,
-        userId: req.query.userId,
+        userId : JSON.parse(searchString).userId,
         competition: results[0].competition,
         competitionLevel: results[0].competitionLevel,
         cpc: results[0].cpc,
@@ -128,7 +130,7 @@ export const searchProducts = async (req, res) => {
     //If there are results from search then store the results in the db
     //also check if the user already has a search store. If yes, delete it.
     if (!searchResults[0].title.includes("Undefined")) {
-        Product.findOneAndDelete({ userId: req.session.passport.user }, function (err, deletedDoc) {
+        Product.findOneAndDelete({ userId: JSON.parse(searchString).userId }, function (err, deletedDoc) {
             if (err) {
               console.log(err);
             } else if (!deletedDoc) {
@@ -138,7 +140,7 @@ export const searchProducts = async (req, res) => {
             }
         });
       let updatedProduct = new Product({
-        userId: req.query.userId,
+        userId: JSON.parse(searchString).userId,
         description: searchResults[0].description,
       title: searchResults[0].title,
       items : searchResults[0].items,
