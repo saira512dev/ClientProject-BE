@@ -3,10 +3,10 @@ import Product from "../models/Product.js";
 import axios from "axios";
 
 export const getSales = async (req, res) => {
-  try {
-    const { searchString } = req.query;
+  console.log("HERE",req.query)
 
-    let data = await Sales.findOne({userId: JSON.parse(searchString).searchQuery.userId})
+  try {
+    let data = await Sales.findOne({userId: req.query.userId})
     console.log(data, "HERE", req.session.passport.user)
     res.status(200).json({data});
   } catch (error) {
@@ -32,7 +32,7 @@ export const searchSales = async (req, res) => {
         include_serp_info: false,
       },
     ];
-     console.log(data)
+    //  console.log(data)
     const config = {
       headers: {
         Authorization:
@@ -66,7 +66,7 @@ export const searchSales = async (req, res) => {
         });
       let search = new Sales({
         search_item: JSON.parse(searchString).searchQuery.query,
-        userId: req.session.passport.user,
+        userId: req.query.userId,
         competition: results[0].competition,
         competitionLevel: results[0].competitionLevel,
         cpc: results[0].cpc,
@@ -138,7 +138,7 @@ export const searchProducts = async (req, res) => {
             }
         });
       let updatedProduct = new Product({
-        userId: req.session.passport.user,
+        userId: req.query.userId,
         description: searchResults[0].description,
       title: searchResults[0].title,
       items : searchResults[0].items,
